@@ -1,6 +1,7 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+// Resize canvas for mobile and desktop
 function resizeCanvas() {
   const maxWidth = Math.min(window.innerWidth - 20, 900);
   canvas.width = maxWidth;
@@ -9,9 +10,12 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
+// Score elements
 const playerScoreEl = document.getElementById('playerScore');
 const ziaScoreEl = document.getElementById('ziaScore');
+const gainedScoreEl = document.getElementById('gainedScore');
 
+let gainedPoints = 0;
 let playerPoints = 0;
 let ziaPoints = 0;
 
@@ -51,6 +55,11 @@ canvas.addEventListener('touchmove', (e) => {
   updatePointer(e);
 }, { passive: false });
 
+// Score pop animations
+let scorePops = [];
+let hitFlash = false;
+let flashTime = 0;
+
 function checkHit() {
   return tareq.visible &&
     pointerX >= tareq.x &&
@@ -61,24 +70,28 @@ function checkHit() {
 
 function onClick() {
   if (checkHit()) {
-    playerPoints += 10;
-    ziaPoints = Math.floor(playerPoints * 0.1);
+    gainedPoints += 10;
+    ziaPoints = Math.floor(gainedPoints * 0.1);
+    playerPoints = gainedPoints - ziaPoints;
     updateScores();
+    scorePops.push({ x: pointerX, y: pointerY, text: "+10", opacity: 1 });
+    hitFlash = true;
+    flashTime = Date.now();
     hideTareq();
   }
 }
 canvas.addEventListener('click', onClick);
 canvas.addEventListener('touchstart', (e) => {
   e.preventDefault();
-  updatePointer(e); // move khamba instantly to touch
-  onClick();         // try to hit
+  updatePointer(e); // instant update on tap
+  onClick();
 }, { passive: false });
 
 function updateScores() {
+  gainedScoreEl.textContent = gainedPoints;
   playerScoreEl.textContent = playerPoints;
   ziaScoreEl.textContent = ziaPoints;
 }
-
 function showTareq() {
   tareq.x = Math.random() * (canvas.width - tareq.width);
   tareq.y = Math.random() * (canvas.height - tareq.height);
@@ -92,21 +105,42 @@ function hideTareq() {
 
 function drawTareq() {
   if (!tareq.visible) return;
-  ctx.drawImage(tareqImg, tareq.x, tareq.y, tareq.width, tareq.height);
+
+  if (hitFlash && Date.now() - flashTime < 150) {
+    ctx.fillStyle = "#FF3B3B";
+    ctx.fillRect(tareq.x, tareq.y, tareq.width, tareq.height);
+  } else {
+    ctx.drawImage(tareqImg, tareq.x, tareq.y, tareq.width, tareq.height);
+    hitFlash = false;
+  }
 }
 
 function drawKhamba() {
   const w = 100;
   const h = 40;
-  ctx.drawImage(khambaImg, pointerX - w / 2, pointerY - h / 2, w, h);
+  ctx.drawImage(khambaImg, pointerX - w / 3, pointerY - h / 2, 52, 72);
 }
 
 function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  // Tarek
   drawTareq();
+
+  // Score pops
+  scorePops.forEach((pop, i) => {
+    ctx.fillStyle = `rgba(255,255,255,${pop.opacity})`;
+    ctx.font = 'bold 20px Inter';
+    ctx.fillText(pop.text, pop.x, pop.y);
+    pop.y -= 1;
+    pop.opacity -= 0.02;
+  });
+  scorePops = scorePops.filter(p => p.opacity > 0);
+
+  // Khamba
   drawKhamba();
 
+  // Hide Tarek if time’s up
   if (tareq.visible && (Date.now() - tareq.timer > tareq.showTime)) {
     hideTareq();
   }
@@ -114,39 +148,13 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
-// Tareq shows up every 1.8 seconds if not already visible
+// Tarek appears randomly every 1.8s
 setInterval(() => {
   if (!tareq.visible) {
     showTareq();
   }
 }, 1800);
 
-let lastTapX = 0;
-let lastTapY = 0;
-let showTapFeedback = false;
-let tapFeedbackTimer = 0;
-
-canvas.addEventListener('touchstart', (e) => {
-  e.preventDefault();
-  updatePointer(e);
-  lastTapX = pointerX;
-  lastTapY = pointerY;
-  showTapFeedback = true;
-  tapFeedbackTimer = Date.now();
-  onClick();
-}, { passive: false });
-
-// inside gameLoop(), add:
-if (showTapFeedback && Date.now() - tapFeedbackTimer < 150) {
-  ctx.beginPath();
-  ctx.arc(lastTapX, lastTapY, 20, 0, Math.PI * 2);
-  ctx.strokeStyle = '#FFFFFF';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-} else {
-  showTapFeedback = false;
-}
-
-
+// Start game
 updateScores();
 gameLoop();
