@@ -1,0 +1,38 @@
+[
+  {
+    "name": "rafi",
+    "score": 260,
+    "playerPercentage": 90,
+    "leaderPercentage": 10
+  },
+  {
+    "name": "rahat",
+    "score": 200,
+    "playerPercentage": 90,
+    "leaderPercentage": 10
+  },
+  {
+    "name": "test",
+    "score": 100,
+    "playerPercentage": 90,
+    "leaderPercentage": 10
+  },
+  {
+    "name": "asdfasdf",
+    "score": 80,
+    "playerPercentage": 90,
+    "leaderPercentage": 10
+  },
+  {
+    "name": "nai morse",
+    "score": 20,
+    "playerPercentage": 90,
+    "leaderPercentage": 10
+  },
+  {
+    "name": "asdads",
+    "score": 20,
+    "playerPercentage": 90,
+    "leaderPercentage": 10
+  }
+]

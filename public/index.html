@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ghore Ghore Biddut</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="files/style.css">
+</head>
+<body>
+  <div id="nameModal" class="modal-overlay">
+    <div class="modal-content">
+      <h2 class="modal-title">তোমার নাম কি?</h2>
+      <input type="text" id="playerNameInput" class="modal-input" placeholder="নাম...">
+      <button id="saveNameBtn" class="modal-save-btn">সেভ করো</button>
+    </div>
+  </div>
+
+  
+
+  <h1 class="main-title">⚡ঘরে ঘরে বিদ্যুৎ⚡</h1>
+
+  <header class="scores-header">
+    <div class="score">
+      <span class="label">মোট অর্জিত পয়েন্ট</span>
+      <div class="value" id="gainedScore">0</div>
+    </div>
+    <div class="score">
+      <span class="label">তোমার অংশ (৯০%)</span>
+      <div class="value" id="playerScore">0</div>
+    </div>
+    <div class="score">
+      <span class="label">দেশ নেতার ১০%</span>
+      <div class="value" id="ziaScore">0</div>
+    </div>
+  </header>
+  <canvas id="gameCanvas"></canvas>
+
+  <div class="game-buttons">
+    <button onclick="location.reload()">আবার খেলুন</button>
+    <button onclick="navigator.share && navigator.share({ title: 'মজার গেম', url: location.href })">বন্ধুদের পাঠান</button>
+    <button onclick="showLeaderboard()">লিডারবোর্ড</button>
+  </div>
+  <script src="files/game.js" defer></script>
+</body>
+</html>
