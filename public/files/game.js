@@ -65,13 +65,13 @@ const khambaImg = new Image();
 khambaImg.src = 'files/khamba.png';
 
 const tareqImg = new Image();
-tareqImg.src = 'files/tareq.jpg';
+tareqImg.src = 'files/tareq.png';
 
 const tareq = {
   x: 0,
   y: 0,
-  width: 80,
-  height: 100,
+  width: 160,
+  height: 200,
   visible: false,
   timer: 0,
   showTime: 1200
