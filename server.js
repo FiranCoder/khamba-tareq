@@ -6,9 +6,14 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-
-// Serve all static files from 'public' folder
+// Serve static files from "public" folder
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve index.html on root route
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 
 const leaderboardFilePath = path.join(__dirname, 'leaderboard.json');
 
